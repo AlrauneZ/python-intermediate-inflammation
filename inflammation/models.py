@@ -46,4 +46,3 @@ def daily_min(data):
     :return: array of minimum values (over all patients) for each day
     """
     return np.min(data, axis=0)
-
