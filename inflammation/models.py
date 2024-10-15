@@ -127,14 +127,14 @@ def daily_max(data):
 def daily_min(data):
     """Calculate the daily min of a 2D inflammation data array.
 
- :param data: 2D array with inflammation data (rows
+    :param data: 2D array with inflammation data (rows
     contain measurements for patients across all days)
     :return: array of minimum values (over all patients) for each day
     """
     return np.min(data, axis=0)
   
 
-  def compute_standard_deviation_by_day(data):
+def compute_standard_deviation_by_day(data):
     """Calculates the standard deviation by day"""
 
     means_by_day = map(daily_mean, data)
@@ -157,3 +157,61 @@ def analyse_data(data_source):
 
     return daily_standard_deviation
 
+class Observation:
+    def __init__(self, day, value):
+        self.day = day
+        self.value = value
+
+    def __str__(self):
+        return str(self.value)
+
+
+class Person:
+    """A person."""
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return self.name
+
+
+class Patient(Person):
+    """A patient in an inflammation study."""
+    def __init__(self, name, observations = None):
+        super().__init__(name)
+        if observations is None:
+            self.observations = []
+        else:
+            self.observations = observations
+
+    def add_observation(self, value, day=None):
+        if day is None:
+            try:
+                day = self.observations[-1].day + 1
+
+            except IndexError:
+                day = 0
+
+        new_observation = Observation(day, value)
+        self.observations.append(new_observation)
+        return new_observation
+
+    @property
+    def last_observation(self):
+        return self.observations[-1]
+
+
+class Doctor(Person):
+    """A doctor in an inflammation study."""
+    def __init__(self, name):
+        super().__init__(name)
+        self.patients = []
+
+    def add_patient(self,new_patient):
+        for patient in self.patients:
+            if patient.name == new_patient.name:
+                return
+        #new_patient = Patient(name_partient)
+        self.patients.append(new_patient)
+
+        return new_patient
